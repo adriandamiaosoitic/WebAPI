@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using WebAPI.Models.ViewModels;
 using WebAPI.Services;
+using WebAPI.Services.Exceptions;
 
 namespace WebAPI.Controllers
 {
@@ -87,6 +88,57 @@ namespace WebAPI.Controllers
                 return NotFound();
             }
             return View(obj);
+        }
+
+        //Edit GET -> Tem a função de retornar para a view os dados nos campos 
+        public IActionResult Edit(int? id) //O ID é obrigatório mas coloca-se o operador de opcional para evitar um possível erro de execução
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var obj = _sellerService.FindById(id.Value);
+
+            if(obj == null)
+            {
+                return NotFound();
+            }
+
+            List<Department> departments = _departmentService.FindAll(); //Lista para povoar o select da tela de edição
+            SellerFormViewModel viewModel = new SellerFormViewModel
+            { 
+                Seller = obj, // Dados do proprio objeto a ser editado
+                Departments = departments
+            };
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Seller seller)
+        {
+            
+            if(id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _sellerService.Update(seller);
+                return RedirectToAction(nameof(Index));
+            }catch(NotFoundException) 
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
+            
+
         }
     }
 }
