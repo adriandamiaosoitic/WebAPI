@@ -20,7 +20,6 @@ namespace WebAPI.Services
 
         public void Insert(Seller obj)
         {
-            obj.Department = _context.Department.First(); //Coloca o primeiro departamento só pra não travar TEMPORARIO
             _context.Add(obj); //Adiciona o objeto no banco de dados
             _context.SaveChanges(); //Confirma a alteração no banco
         }
