@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -48,13 +49,13 @@ namespace WebAPI.Controllers
         { 
             if(id == null)
             {
-                return NotFound(); //Retorna uma resposta básica
+                return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" }); //Retorna uma resposta básica
             }
 
             var obj = _sellerService.FindById(id.Value); //.Value é porque ele é Nullable/Opcional
             if(obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id Not Found!" });
             }
 
             return View(obj);
@@ -64,11 +65,7 @@ namespace WebAPI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
-            if(id == null)
-            {
-                return NotFound();
-            }
-
+     
             _sellerService.Remove(id);
 
             return RedirectToAction(nameof(Index));
@@ -79,13 +76,13 @@ namespace WebAPI.Controllers
         {
             if(id == null) 
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" });
             }
             var obj = _sellerService.FindById(id.Value);
 
             if(obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id Not Found!" });
             }
             return View(obj);
         }
@@ -95,14 +92,14 @@ namespace WebAPI.Controllers
         {
             if(id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" });
             }
 
             var obj = _sellerService.FindById(id.Value);
 
             if(obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id Not Found!" });
             }
 
             List<Department> departments = _departmentService.FindAll(); //Lista para povoar o select da tela de edição
@@ -123,22 +120,28 @@ namespace WebAPI.Controllers
             
             if(id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id Mismatch!" });
             }
             try
             {
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
-            }catch(NotFoundException) 
+            }catch(ApplicationException e) 
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
-            {
-                return BadRequest();
-            }
-            
+           
+        }
 
+        public IActionResult Error(string message) //Essa ação serve para retornar a view de Erro
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier //Se o primeiro é nulo, pega o segundo
+            };
+
+            return View(viewModel);
         }
     }
 }
