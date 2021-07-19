@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace WebAPI.Models
@@ -7,9 +8,19 @@ namespace WebAPI.Models
     public class Seller
     {
         public int Id { get; set; }
+
         public string Name { get; set; }
+
+        [DataType(DataType.EmailAddress)] //Annotations que formatam o formato das propriedades
         public string Email { get; set; }
+
+        [Display(Name = "Birth Date")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")] // 0 -> indica o valor do atributo
         public DateTime BirthName { get; set; }
+
+        [Display(Name = "Base Salary")]
+        [DataType(DataType.Currency)]
         public double BaseSalary { get; set; }
 
         public Department Department { get; set; }
