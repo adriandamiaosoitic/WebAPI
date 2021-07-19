@@ -1,18 +1,29 @@
-﻿using System;
+﻿using WebAPI.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using WebAPI.Models;
 
 namespace WebAPI.Services
 {
     public class SellerService
     {
-        private WebAPIContext _context;
-            
-        public SellerService(WebAPIContext context) //Injeção de dependência
+        private readonly WebAPIContext _context;
+
+        public SellerService(WebAPIContext context)
         {
             _context = context;
         }
+
+        public List<Seller> FindAll()
+        {
+            return  _context.Seller.ToList();
+        }
+
+        public void Insert(Seller obj)
+        {
+            obj.Department = _context.Department.First(); //Coloca o primeiro departamento só pra não travar TEMPORARIO
+            _context.Add(obj); //Adiciona o objeto no banco de dados
+            _context.SaveChanges(); //Confirma a alteração no banco
+        }
+
     }
 }

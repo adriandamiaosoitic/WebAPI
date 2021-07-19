@@ -7,7 +7,7 @@ namespace WebAPI.Models
 {
     public class Department
     {
-        public long Id{ get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
 
         public ICollection<Seller> Sellers { get; set; } = new List<Seller>();
@@ -17,7 +17,7 @@ namespace WebAPI.Models
 
         }
 
-        public  Department(long id, string name)
+        public  Department(int id, string name)
         {
             Id = id;
             Name = name;
