@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using WebAPI.Models;
 
 namespace WebAPI.Services
@@ -14,9 +16,9 @@ namespace WebAPI.Services
             _context = context;
         }
 
-        public List<Department> FindAll()
-        {
-            return _context.Department.OrderBy(x => x.Name).ToList(); //Retorna a lista ordenada por nome
+        public async Task<List<Department>> FindAllAsync()
+        {   
+            return await _context.Department.OrderBy(x => x.Name).ToListAsync(); //Retorna a lista ordenada por nome
         }
         
         public void Insert(Department obj)

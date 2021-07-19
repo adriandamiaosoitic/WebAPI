@@ -22,45 +22,45 @@ namespace WebAPI.Controllers
             _departmentService = departmentService;
         }
 
-        public  IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
 
         //GET
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost] //Cadastro de informações por meio do metodo POST
         [ValidateAntiForgeryToken] //Previne a página de ataques CSRF
-        public IActionResult Create(Seller seller) //Sera instanciado normalmente
+        public async Task<IActionResult> Create(Seller seller) //Sera instanciado normalmente
         {
             if (!ModelState.IsValid) //Redundância de validação no Server-Side, para não deixar que um usuário com o javascript desabilitado cadastre informações invalidas
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
 
 
-            _sellerService.Insert(seller);
+            await _sellerService.InsertAsync(seller);
             return RedirectToAction(nameof(Index));
         }
 
         //GET delete -> Retorna para a view o objeto a ser deletado
-        public IActionResult Delete(int? id)  //? id opcional
+        public async Task<IActionResult> Delete(int? id)  //? id opcional
         { 
             if(id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" }); //Retorna uma resposta básica
             }
 
-            var obj = _sellerService.FindById(id.Value); //.Value é porque ele é Nullable/Opcional
+            var obj = await _sellerService.FindByIdAsync(id.Value); //.Value é porque ele é Nullable/Opcional
             if(obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Not Found!" });
@@ -71,22 +71,22 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
      
-            _sellerService.Remove(id);
+            await _sellerService.RemoveAsync(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         //GET Details
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if(id == null) 
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" });
             }
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if(obj == null)
             {
@@ -96,21 +96,21 @@ namespace WebAPI.Controllers
         }
 
         //Edit GET -> Tem a função de retornar para a view os dados nos campos 
-        public IActionResult Edit(int? id) //O ID é obrigatório mas coloca-se o operador de opcional para evitar um possível erro de execução
+        public async Task<IActionResult> Edit(int? id) //O ID é obrigatório mas coloca-se o operador de opcional para evitar um possível erro de execução
         {
             if(id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Not Provided!" });
             }
 
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
 
             if(obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id Not Found!" });
             }
 
-            List<Department> departments = _departmentService.FindAll(); //Lista para povoar o select da tela de edição
+            List<Department> departments = await _departmentService.FindAllAsync(); //Lista para povoar o select da tela de edição
             SellerFormViewModel viewModel = new SellerFormViewModel
             { 
                 Seller = obj, // Dados do proprio objeto a ser editado
@@ -123,12 +123,12 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
 
             if (!ModelState.IsValid)
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
@@ -139,7 +139,7 @@ namespace WebAPI.Controllers
             }
             try
             {
-                _sellerService.Update(seller);
+                await _sellerService.UpdateAsync(seller);
                 return RedirectToAction(nameof(Index));
             }catch(ApplicationException e) 
             {
