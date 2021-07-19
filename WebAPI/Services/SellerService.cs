@@ -24,5 +24,17 @@ namespace WebAPI.Services
             _context.SaveChanges(); //Confirma a alteração no banco
         }
 
+        public Seller FindById(int id)
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+        }
+
+        public void Remove(int id)
+        {
+            var obj = _context.Seller.Find(id); //Retorna um obj com aquele Id passado por parametro
+            _context.Seller.Remove(obj); //Remove o objeto do banco
+            _context.SaveChanges(); //Confirma a operação de remover
+        }
+
     }
 }

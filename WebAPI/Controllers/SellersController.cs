@@ -41,5 +41,36 @@ namespace WebAPI.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
+
+        //GET delete -> Retorna para a view o objeto a ser deletado
+        public IActionResult Delete(int? id)  //? id opcional
+        { 
+            if(id == null)
+            {
+                return NotFound(); //Retorna uma resposta básica
+            }
+
+            var obj = _sellerService.FindById(id.Value); //.Value é porque ele é Nullable/Opcional
+            if(obj == null)
+            {
+                return NotFound();
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            _sellerService.Remove(id);
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
