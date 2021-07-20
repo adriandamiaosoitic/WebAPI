@@ -18,7 +18,7 @@ namespace WebAPI.Services
 
         public async Task<List<Seller>> FindAllAsync()
         {
-            return  _context.Seller.ToListAsync();
+            return await _context.Seller.ToListAsync();
         }
 
         public async Task InsertAsync(Seller obj)
@@ -34,9 +34,16 @@ namespace WebAPI.Services
 
         public async Task RemoveAsync(int id)
         {
-            var obj = await _context.Seller.FindAsync(id); //Retorna um obj com aquele Id passado por parametro
-            _context.Seller.Remove(obj); //Remove o objeto do banco
-            await _context.SaveChangesAsync(); //Confirma a operação de remover
+            try
+            {
+                var obj = await _context.Seller.FindAsync(id); //Retorna um obj com aquele Id passado por parametro
+                _context.Seller.Remove(obj); //Remove o objeto do banco
+                await _context.SaveChangesAsync(); //Confirma a operação de remover
+            }
+            catch(DbUpdateException e)
+            {
+                throw new IntegrityException(e.Message);
+            }
         }
 
         public async Task UpdateAsync(Seller obj)

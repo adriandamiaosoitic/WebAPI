@@ -20,14 +20,14 @@ namespace WebAPI.Controllers
         }
 
         // GET: Departments
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _departmentService.FindAll();
+            var list = await _departmentService.FindAllAsync();
             return View(list);
         }
 
         // GET: Departments/Create
-        public IActionResult Create()
+        public  IActionResult Create()
         {
             return View();
         }
