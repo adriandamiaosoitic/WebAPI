@@ -1,11 +1,17 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace WebAPI.Models
 {
     public class SalesRecord
     {
         public int Id { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime Date { get; set; }
+
+        [DataType(DataType.Currency)]
         public Double Amount { get; set; }
         public SaleStatus Status { get; set; }
 
