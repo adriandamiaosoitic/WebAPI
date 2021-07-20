@@ -76,7 +76,7 @@ namespace WebAPI.Controllers
             try
             {
                 await _sellerService.RemoveAsync(id);
-            }catch(IntegrityException e)
+            }catch(IntegrityException)
             {
                 return RedirectToAction(nameof(Error), new { message = "Can't delete. This seller has sales!" });
             }

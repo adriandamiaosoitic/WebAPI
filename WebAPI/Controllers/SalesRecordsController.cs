@@ -41,9 +41,20 @@ namespace WebAPI.Controllers
             var list = await _salesRecordService.FindByDateAsync(minDate, maxDate);
             return View(list);
         }
-        public async Task<IActionResult> GroupingSearch()
+        public async Task<IActionResult> GroupingSearch(DateTime? minDate, DateTime? maxDate)
         {
-            return View();
+            if (!minDate.HasValue)
+            {
+                minDate = new DateTime(DateTime.Now.Year, 1, 1); // new pra usar a sobrecarga
+            }
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
+            ViewData["minDate"] = minDate.Value.ToString("yyyy-MM-dd");
+            ViewData["maxDate"] = maxDate.Value.ToString("yyyy-MM-dd");
+            var list = await _salesRecordService.FindByDateGroupingAsync(minDate, maxDate);
+            return View(list);
         }
     }
 }
