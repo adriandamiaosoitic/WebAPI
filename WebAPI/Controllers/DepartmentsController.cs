@@ -25,13 +25,12 @@ namespace WebAPI.Controllers
             var list = await _departmentService.FindAllAsync();
             return View(list);
         }
-
         // GET: Departments/Create
-        public  IActionResult Create()
+         public async Task<IActionResult> Create()
         {
-            return View();
+            var departments = await _departmentService.FindAllAsync();
+            return View(departments);
         }
-
         // POST: Departments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]

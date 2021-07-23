@@ -24,7 +24,7 @@ namespace WebAPI.Services
         public void Insert(Department obj)
         {
             _context.Add(obj);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
         }
 
     }
