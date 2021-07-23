@@ -11,7 +11,6 @@ using WebAPI.Data;
 using WebAPI.Services;
 using WebAPI.Models;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Routing;
 
 namespace WebAPI
 {
@@ -33,6 +32,7 @@ namespace WebAPI
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -79,7 +79,7 @@ namespace WebAPI
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Departments}/{action=Create}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -35,7 +35,7 @@
             </div>
             <div class=" form-group">
                 <label asp-for="Seller.DepartmentId" class="control-label"></label>
-                <select asp-for="Seller.DepartmentId" asp-items='@(new SelectList(Model.Departments, "Id", "Name"))' class="form-control"> </select> <!--O primeiro argumento é a fonte de dados, o segundo é a chave(codigo) do objeto e o terceiro qual atibuto aparece no select-->
+                <select asp-for="Seller.DepartmentId" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))" class="form-control"> </select> <!--O primeiro argumento é a fonte de dados, o segundo é a chave(codigo) do objeto e o terceiro qual atibuto aparece no select-->
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
